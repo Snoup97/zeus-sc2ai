@@ -105,7 +105,7 @@ class ZeusBot(sc2.BotAI):
                         await self.do(s.attack(random.choice(self.known_enemy_units)))
 
 
-run_game(maps.get("AbyssalReefLE"), [
+run_game(maps.get("AutomatonLE"), [
     Bot(Race.Protoss, ZeusBot()),
     Computer(Race.Terran, Difficulty.Hard)
     ], realtime=False)
