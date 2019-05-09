@@ -10,7 +10,7 @@ from Bot import AiMain
 def main():
     player_config = [
         Bot(Race.Protoss, AiMain.ZeusBot()),
-        Computer(Race.Random, Difficulty.Medium)
+        Computer(Race.Random, Difficulty.Hard)
     ]
 
     gen = sc2.main._host_game_iter(

@@ -4,7 +4,7 @@ from sc2.constants import NEXUS, PROBE, PYLON, ASSIMILATOR
 
 # Build 22 Probes per Nexus
 async def build_workers(self):
-    if (len(self.units(NEXUS)) * 22) < len(self.units(PROBE)):
+    if (len(self.units(NEXUS)) * 22) > len(self.units(PROBE)):
         for nexus in self.units(NEXUS).ready.noqueue:
             if self.can_afford(PROBE):
                 await self.do(nexus.train(PROBE))
@@ -29,7 +29,7 @@ async def build_assimilators(self):
             worker = self.select_build_worker(vaspene.position)
             if worker is None:
                 break
-            if not self.units(ASSIMILATOR).closer_than(1.0, vaspene).exists:
+            if not self.units(ASSIMILATOR).closer_than(1.0, vaspene).exists and self.units(PYLON).exists:
                 await self.do(worker.build(ASSIMILATOR, vaspene))
 
 

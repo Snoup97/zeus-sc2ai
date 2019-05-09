@@ -1,17 +1,15 @@
 import sc2
 from sc2.constants import NEXUS, PROBE, PYLON, ASSIMILATOR, GATEWAY, \
- CYBERNETICSCORE, STALKER, STARGATE, VOIDRAY
+ CYBERNETICSCORE, STALKER
 import random
 from Bot import BaseManager
 
+openingMessage = '(glhf)'
+
 
 class ZeusBot(sc2.BotAI):
-    def __init__(self):
-        self.ITERATIONS_PER_MINUTE = 165
-        self.MAX_WORKERS = 50
 
     async def on_step(self, iteration):
-        self.iteration = iteration
         await self.distribute_workers()
         await BaseManager.build_workers(self)
         await BaseManager.build_pylons(self)
@@ -22,32 +20,27 @@ class ZeusBot(sc2.BotAI):
         await self.build_offensive_force()
         await self.attack()
 
+    # Build Army Buildings
     async def offensive_force_buildings(self):
         if self.units(PYLON).ready.exists:
+
+            # Random Pylon
             pylon = self.units(PYLON).ready.random
 
+            # Build Cybercore
             if self.units(GATEWAY).ready.exists and not self.units(CYBERNETICSCORE):
                 if self.can_afford(CYBERNETICSCORE) and not self.already_pending(CYBERNETICSCORE):
                     await self.build(CYBERNETICSCORE, near=pylon)
 
-            elif len(self.units(GATEWAY)) < ((self.iteration / self.ITERATIONS_PER_MINUTE)/2):
+            if len(self.units(GATEWAY)) < 8:
                 if self.can_afford(GATEWAY) and not self.already_pending(GATEWAY):
                     await self.build(GATEWAY, near=pylon)
 
-            if self.units(CYBERNETICSCORE).ready.exists:
-                if len(self.units(STARGATE)) < ((self.iteration / self.ITERATIONS_PER_MINUTE)/2):
-                    if self.can_afford(STARGATE) and not self.already_pending(STARGATE):
-                        await self.build(STARGATE, near=pylon)
-
+    # Build the Army
     async def build_offensive_force(self):
         for gw in self.units(GATEWAY).ready.noqueue:
-            if not self.units(STALKER).amount > self.units(VOIDRAY).amount:
-                if self.can_afford(STALKER) and self.supply_left > 0:
-                    await self.do(gw.train(STALKER))
-
-        for sg in self.units(STARGATE).ready.noqueue:
-            if self.can_afford(VOIDRAY) and self.supply_left > 0:
-                await self.do(sg.train(VOIDRAY))
+            if self.can_afford(STALKER) and self.supply_left > 0:
+                await self.do(gw.train(STALKER))
 
     def find_target(self, state):
         if len(self.known_enemy_units) > 0:
@@ -59,7 +52,7 @@ class ZeusBot(sc2.BotAI):
 
     async def attack(self):
         # {UNIT: [n to fight, m to defend]}
-        aggressive_units = {STALKER: [15, 5]}
+        aggressive_units = {STALKER: [15, 1]}
 
         for UNIT in aggressive_units:
             if self.units(UNIT).amount > aggressive_units[UNIT][0] and self.units(UNIT).amount > aggressive_units[UNIT][1]:
