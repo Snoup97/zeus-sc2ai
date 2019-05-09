@@ -1,9 +1,8 @@
 import sc2
-from sc2 import run_game, maps, Race, Difficulty
-from sc2.player import Bot, Computer
 from sc2.constants import NEXUS, PROBE, PYLON, ASSIMILATOR, GATEWAY, \
  CYBERNETICSCORE, STALKER, STARGATE, VOIDRAY
 import random
+from Bot import BaseManager
 
 
 class ZeusBot(sc2.BotAI):
@@ -14,46 +13,16 @@ class ZeusBot(sc2.BotAI):
     async def on_step(self, iteration):
         self.iteration = iteration
         await self.distribute_workers()
-        await self.build_workers()
-        await self.build_pylons()
-        await self.build_assimilators()
-        await self.expand()
+        await BaseManager.build_workers(self)
+        await BaseManager.build_pylons(self)
+        await BaseManager.build_assimilators(self)
+        await BaseManager.expand(self)
+        await self.distribute_workers()
         await self.offensive_force_buildings()
         await self.build_offensive_force()
         await self.attack()
 
-    async def build_workers(self):
-        if (len(self.units(NEXUS)) * 16) > len(self.units(PROBE)) and len(self.units(PROBE)) < self.MAX_WORKERS:
-            for nexus in self.units(NEXUS).ready.noqueue:
-                if self.can_afford(PROBE):
-                    await self.do(nexus.train(PROBE))
-
-
-    async def build_pylons(self):
-        if self.supply_left < 5 and not self.already_pending(PYLON):
-            nexuses = self.units(NEXUS).ready
-            if nexuses.exists:
-                if self.can_afford(PYLON):
-                    await self.build(PYLON, near=nexuses.first)
-
-    async def build_assimilators(self):
-        for nexus in self.units(NEXUS).ready:
-            vaspenes = self.state.vespene_geyser.closer_than(15.0, nexus)
-            for vaspene in vaspenes:
-                if not self.can_afford(ASSIMILATOR):
-                    break
-                worker = self.select_build_worker(vaspene.position)
-                if worker is None:
-                    break
-                if not self.units(ASSIMILATOR).closer_than(1.0, vaspene).exists:
-                    await self.do(worker.build(ASSIMILATOR, vaspene))
-
-    async def expand(self):
-        if self.units(NEXUS).amount < (self.iteration / self.ITERATIONS_PER_MINUTE) and self.can_afford(NEXUS):
-            await self.expand_now()
-
     async def offensive_force_buildings(self):
-        #print(self.iteration / self.ITERATIONS_PER_MINUTE)
         if self.units(PYLON).ready.exists:
             pylon = self.units(PYLON).ready.random
 
@@ -89,10 +58,8 @@ class ZeusBot(sc2.BotAI):
             return self.enemy_start_locations[0]
 
     async def attack(self):
-        # {UNIT: [n to fight, n to defend]}
-        aggressive_units = {STALKER: [15, 5],
-                            VOIDRAY: [8, 3]}
-
+        # {UNIT: [n to fight, m to defend]}
+        aggressive_units = {STALKER: [15, 5]}
 
         for UNIT in aggressive_units:
             if self.units(UNIT).amount > aggressive_units[UNIT][0] and self.units(UNIT).amount > aggressive_units[UNIT][1]:
