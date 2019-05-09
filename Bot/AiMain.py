@@ -103,9 +103,3 @@ class ZeusBot(sc2.BotAI):
                 if len(self.known_enemy_units) > 0:
                     for s in self.units(UNIT).idle:
                         await self.do(s.attack(random.choice(self.known_enemy_units)))
-
-
-run_game(maps.get("AutomatonLE"), [
-    Bot(Race.Protoss, ZeusBot()),
-    Computer(Race.Terran, Difficulty.Hard)
-    ], realtime=False)
