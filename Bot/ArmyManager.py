@@ -21,7 +21,7 @@ async def build_offensive_force(self):
         pylon = self.units(PYLON).ready.random.position
         placement = await self.find_placement(WARPGATETRAIN_STALKER, near=pylon, placement_step=1)
         if self.can_afford(STALKER) and self.supply_left > 0:
-            if self.units(IMMORTAL).amount >= 2 or self.units(ROBOTICSFACILITY).ready.noqueue.amount == 0:
+            if self.units(IMMORTAL).amount >= 4 or self.units(ROBOTICSFACILITY).ready.noqueue.amount == 0:
                 await self.do(wg.warp_in(STALKER, placement))
 
 
@@ -41,7 +41,7 @@ async def attack(self):
                         IMMORTAL: [2, 1]}
 
     for UNIT in aggressive_units:
-        if self.units(STALKER).amount > 12 or self.units(IMMORTAL).amount > 4:
+        if self.units(STALKER).amount > 12 and self.units(IMMORTAL).amount > 4:
             for s in self.units(UNIT).idle:
                 await self.do(s.attack(find_target(self, self.state)))
 
