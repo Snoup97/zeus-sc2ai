@@ -1,6 +1,6 @@
 import sc2
-from sc2.constants import NEXUS, PROBE, PYLON, ASSIMILATOR, GATEWAY, CYBERNETICSCORE, WARPGATE, STALKER, \
-    WARPGATETRAIN_STALKER, ROBOTICSFACILITY, IMMORTAL
+from sc2.constants import NEXUS, PROBE, PYLON, ASSIMILATOR, GATEWAY, \
+    CYBERNETICSCORE, WARPGATE, STALKER, WARPGATETRAIN_STALKER, ROBOTICSFACILITY, IMMORTAL
 import random
 
 
@@ -15,8 +15,7 @@ async def build_offensive_force(self):
 
     for gw in self.units(GATEWAY).ready.noqueue:
         if self.can_afford(STALKER) and self.supply_left > 0:
-            if not self.warpgateresearched:
-                await self.do(gw.train(STALKER))
+            await self.do(gw.train(STALKER))
 
     for wg in self.units(WARPGATE).ready.noqueue:
         pylon = self.units(PYLON).ready.random.position
@@ -38,11 +37,11 @@ def find_target(self, state):
 # ToDo find way to group army
 async def attack(self):
     # {UNIT: [n to fight, m to defend]}
-    aggressive_units = {STALKER: [15, 1],
-                        IMMORTAL: [3, 0]}
+    aggressive_units = {STALKER: [8, 1],
+                        IMMORTAL: [2, 1]}
 
     for UNIT in aggressive_units:
-        if self.units(UNIT).amount > aggressive_units[UNIT][0] and self.units(UNIT).amount > aggressive_units[UNIT][1]:
+        if self.units(STALKER).amount > 12 or self.units(IMMORTAL).amount > 4:
             for s in self.units(UNIT).idle:
                 await self.do(s.attack(find_target(self, self.state)))
 

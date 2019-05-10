@@ -1,4 +1,8 @@
 from importlib import reload
+import argparse
+
+import sys
+import asyncio
 
 import sc2
 from sc2 import Race, Difficulty
@@ -10,7 +14,7 @@ from Bot import AiMain
 def main():
     player_config = [
         Bot(Race.Protoss, AiMain.ZeusBot()),
-        Computer(Race.Random, Difficulty.Hard)
+        Computer(Race.Random, Difficulty.VeryHard)
     ]
 
     gen = sc2.main._host_game_iter(
@@ -21,8 +25,6 @@ def main():
 
     while True:
         r = next(gen)
-
-        input("Press enter to reload ")
 
         reload(AiMain)
         player_config[0].ai = AiMain.ZeusBot()
