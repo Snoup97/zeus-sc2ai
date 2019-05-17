@@ -1,9 +1,8 @@
 import sc2
-from sc2.constants import NEXUS, PROBE, PYLON, ASSIMILATOR, GATEWAY, \
- CYBERNETICSCORE, STALKER, RESEARCH_WARPGATE, WARPGATE, WARPGATETRAIN_STALKER
+from sc2.constants import CYBERNETICSCORE, RESEARCH_WARPGATE
 from sc2.player import Bot, Computer
 from sc2 import Race, Difficulty
-from Bot import BaseManager, ArmyManager
+from Bot.BuildOrders.TwoBasePush import BaseManager, ArmyManager
 
 
 class ZeusBot(sc2.BotAI):
