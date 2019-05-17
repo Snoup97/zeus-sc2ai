@@ -3,7 +3,7 @@ import random
 from sc2.constants import NEXUS, PROBE, PYLON, FORGE, PHOTONCANNON
 
 
-def execute_rush(self):
+async def execute_rush(self):
     if not self.units(NEXUS).exists:
         for worker in self.workers:
             await self.do(worker.attack(self.enemy_start_locations[0]))
