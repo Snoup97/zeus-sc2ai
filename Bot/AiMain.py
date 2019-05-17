@@ -1,8 +1,7 @@
 import sc2
-from sc2.constants import CYBERNETICSCORE, RESEARCH_WARPGATE
 from sc2.player import Bot, Computer
 from sc2 import Race, Difficulty
-from Bot.BuildOrders.TwoBasePush import BaseManager, ArmyManager
+from Bot.BuildOrders.TwoBasePush import BaseManager, ArmyManager, TechManager
 
 
 class ZeusBot(sc2.BotAI):
@@ -11,7 +10,7 @@ class ZeusBot(sc2.BotAI):
 
     async def on_step(self, iteration):
         await self.distribute_workers()
-        await self.researchwarp()
+        await TechManager.researchwarp(self)
         await BaseManager.build_workers(self)
         await BaseManager.build_pylons(self)
         await BaseManager.build_assimilators(self)
@@ -19,13 +18,6 @@ class ZeusBot(sc2.BotAI):
         await BaseManager.offensive_force_buildings(self)
         await ArmyManager.build_offensive_force(self)
         await ArmyManager.attack(self)
-
-    # ToDo Bug Fix Sometimes Warpgate isnt researched
-    async def researchwarp(self):
-        for core in self.units(CYBERNETICSCORE).ready.noqueue:
-            if self.can_afford(RESEARCH_WARPGATE) and not self.warpgateresearched:
-                await self.do(core(RESEARCH_WARPGATE))
-                self.warpgateresearched = True
 
 
 def main():

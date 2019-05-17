@@ -1,4 +1,3 @@
-import sc2
 from sc2.constants import NEXUS, PROBE, PYLON, ASSIMILATOR, \
     GATEWAY, CYBERNETICSCORE, WARPGATE, ROBOTICSFACILITY
 
@@ -13,7 +12,6 @@ async def build_workers(self):
 
 # Build Pylon if under 5 Supply left
 async def build_pylons(self):
-
     if self.supply_left < 15 and self.time > 300 and len(self.units(PYLON).not_ready) < 2:
         nexus = self.units(NEXUS).random
         await self.build(PYLON, near=nexus.position.towards(self.game_info.map_center, 8))
