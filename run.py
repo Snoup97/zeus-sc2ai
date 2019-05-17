@@ -8,13 +8,13 @@ import sc2
 from sc2 import Race, Difficulty
 from sc2.player import Bot, Computer
 
-from Bot import AiMain
+from Bot import ZeusBot
 
 
 def main():
     player_config = [
-        Bot(Race.Protoss, AiMain.ZeusBot()),
-        Computer(Race.Random, Difficulty.VeryHard)
+        Bot(Race.Protoss, ZeusBot.ZeusBot()),
+        Computer(Race.Random, Difficulty.Medium)
     ]
 
     gen = sc2.main._host_game_iter(
@@ -26,8 +26,8 @@ def main():
     while True:
         r = next(gen)
 
-        reload(AiMain)
-        player_config[0].ai = AiMain.ZeusBot()
+        reload(ZeusBot)
+        player_config[0].ai = ZeusBot.ZeusBot()
         gen.send(player_config)
 
 
